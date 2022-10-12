@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "946503199026",
+    "project_id": "cooking-stack",
+    "storage_bucket": "cooking-stack.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:946503199026:android:e2613240c6025cc820cf2b",
+        "android_client_info": {
+          "package_name": "com.example.cooking_stack"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "946503199026-coeo64hjndcbn3qr914lnhaai0kipel5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCjBHiZkKOm6wM6moo3BPvJdW7aoUJ8VEM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "946503199026-coeo64hjndcbn3qr914lnhaai0kipel5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
