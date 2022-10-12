@@ -1,12 +1,19 @@
 import 'package:cooking_stack/common/theme_data.dart';
 import 'package:cooking_stack/views/login.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 import 'common/global_variables.dart';
+import 'firebase_options.dart';
 import 'views/admin_view.dart';
 import 'views/order_view.dart';
 
-void main() => runApp(const MyApp());
+void main() async {
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(const MyApp());
+}
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
