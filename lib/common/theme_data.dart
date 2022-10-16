@@ -6,10 +6,12 @@ class CustomTheme {
   CustomTheme._();
 
   static var theme = ThemeData(
-      primaryColor: const Color(0xffdc582a),
+      primaryColor: GlobalVar.orange,
       appBarTheme: AppBarTheme(
         color: GlobalVar.orange,
       ),
+      progressIndicatorTheme:
+          ProgressIndicatorThemeData(color: GlobalVar.orange),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         backgroundColor: GlobalVar.orange,
       ),

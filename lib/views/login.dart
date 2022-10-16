@@ -1,13 +1,15 @@
 import 'package:cooking_stack/common/global_variables.dart';
+import 'package:cooking_stack/views/main_menu.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 
 class LoginView extends StatelessWidget {
   const LoginView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    var usernameController = TextEditingController();
+    var passwordController = TextEditingController();
     return Container(
       decoration: const BoxDecoration(
           color: Colors.white,
@@ -38,22 +40,42 @@ class LoginView extends StatelessWidget {
                       color: GlobalVar.black,
                       fontWeight: FontWeight.bold)),
               const SizedBox(height: 20),
-              const TextField(
+              TextField(
+                controller: usernameController,
                 maxLength: 320,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                     hintText: 'Correo Electrónico', counterText: ''),
               ),
-              const TextField(
+              TextField(
+                controller: passwordController,
                 obscureText: true,
                 maxLength: 256,
-                decoration:
-                    InputDecoration(hintText: 'Contraseña', counterText: ''),
+                decoration: const InputDecoration(
+                    hintText: 'Contraseña', counterText: ''),
               ),
               const SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 50),
                 child: ElevatedButton(
-                    onPressed: () {}, child: const Text('Iniciar Sesión')),
+                    onPressed: () async {
+                      await FirebaseAuth.instance
+                          .signInWithEmailAndPassword(
+                              email: usernameController.text
+                                  .trimLeft()
+                                  .trimRight(),
+                              password: passwordController.text)
+                          .then((value) {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const MainMenu()),
+                        );
+                      }).onError((error, stackTrace) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(error.toString())));
+                      });
+                    },
+                    child: const Text('Iniciar Sesión')),
               )
             ]),
       ),

@@ -1,3 +1,4 @@
+import 'package:cooking_stack/views/settings_view.dart';
 import 'package:flutter/material.dart';
 
 import '../common/global_variables.dart';
@@ -80,7 +81,7 @@ class _MainMenuState extends State<MainMenu> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const Admin()),
+                              builder: (context) => const Settings()),
                         );
                         break;
                     }
