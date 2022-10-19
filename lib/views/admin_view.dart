@@ -15,7 +15,7 @@ class Admin extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const AddWidget()),
+                MaterialPageRoute(builder: (context) => const AddFood()),
               );
             },
             child: const Icon(Icons.add)),
@@ -23,8 +23,8 @@ class Admin extends StatelessWidget {
   }
 }
 
-class AddWidget extends StatelessWidget {
-  const AddWidget({super.key});
+class AddFood extends StatelessWidget {
+  const AddFood({super.key});
 
   @override
   Widget build(BuildContext context) {

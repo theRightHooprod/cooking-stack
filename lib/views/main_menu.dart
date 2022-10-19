@@ -2,8 +2,6 @@ import 'package:cooking_stack/views/settings_view.dart';
 import 'package:flutter/material.dart';
 
 import '../common/global_variables.dart';
-import '../common/theme_data.dart';
-import 'admin_view.dart';
 import 'order_view.dart';
 
 class MainMenu extends StatefulWidget {
