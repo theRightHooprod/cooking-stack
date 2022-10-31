@@ -1,3 +1,5 @@
+import 'package:cooking_stack/common/firebase.dart';
+import 'package:cooking_stack/views/admin_view.dart';
 import 'package:cooking_stack/views/settings_view.dart';
 import 'package:flutter/material.dart';
 
@@ -79,7 +81,7 @@ class _MainMenuState extends State<MainMenu> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const Settings()),
+                              builder: (context) => const Admin()),
                         );
                         break;
                     }
