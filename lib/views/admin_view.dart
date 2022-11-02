@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import '../common/global_variables.dart';
+import 'package:image_picker/image_picker.dart';
 
 class Admin extends StatelessWidget {
   const Admin({
@@ -23,8 +26,64 @@ class Admin extends StatelessWidget {
   }
 }
 
-class AddFood extends StatelessWidget {
+class AddFood extends StatefulWidget {
   const AddFood({super.key});
+
+  @override
+  State<AddFood> createState() => _AddFoodState();
+}
+
+class _AddFoodState extends State<AddFood> {
+  final ImagePicker _picker = ImagePicker();
+  XFile? capturedImage;
+
+  Future<Container> previewImage() async {
+    final LostDataResponse response = await _picker.retrieveLostData();
+    if (response.isEmpty) {
+      return capturedImage == null
+          ? Container(
+              padding: const EdgeInsets.all(50),
+              decoration: BoxDecoration(
+                  border: Border.all(color: GlobalVar.orange, width: 4),
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(20),
+                  )),
+              child: const Icon(
+                Icons.camera_alt,
+                size: 50,
+              ))
+          : Container(
+              height: 200,
+              decoration: BoxDecoration(
+                  border: Border.all(color: GlobalVar.orange, width: 4),
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(20),
+                  ),
+                  image: DecorationImage(
+                    image: FileImage(File(capturedImage!.path)),
+                    fit: BoxFit.fitWidth,
+                  )),
+            );
+    }
+    if (response.files != null) {
+      capturedImage = response.files!.first;
+      setState(() {});
+      return Container(
+        height: 200,
+        decoration: BoxDecoration(
+            border: Border.all(color: GlobalVar.orange, width: 4),
+            borderRadius: const BorderRadius.all(
+              Radius.circular(20),
+            ),
+            image: DecorationImage(
+              image: FileImage(File(capturedImage!.path)),
+              fit: BoxFit.fitWidth,
+            )),
+      );
+    } else {
+      throw Error();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,63 +93,33 @@ class AddFood extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
           children: [
             GestureDetector(
-              onTap: (() {
-                ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('*Mostrando camara 📷*')));
-              }),
-              child: Container(
-                  padding: const EdgeInsets.all(50),
-                  decoration: BoxDecoration(
-                      border: Border.all(color: GlobalVar.orange, width: 4),
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(20),
-                      )),
-                  child: const Icon(
-                    Icons.camera_alt,
-                    size: 50,
-                  )),
-            ),
+                onTap: (() async {
+                  capturedImage = await _picker.pickImage(
+                      source: ImageSource.camera, requestFullMetadata: false);
+                  setState(() {});
+                }),
+                child: FutureBuilder(
+                  future: previewImage(),
+                  builder:
+                      (BuildContext context, AsyncSnapshot<Widget> snapshot) {
+                    if (snapshot.hasData) {
+                      return snapshot.data!;
+                    } else {
+                      return const CircularProgressIndicator();
+                    }
+                  },
+                )),
             const SizedBox(height: 10.0),
             const TextField(
               decoration: InputDecoration(
-                  hintText: 'Categoría', icon: Icon(Icons.category)),
+                  hintText: 'Nombre del alimento/producto',
+                  icon: Icon(Icons.abc)),
             ),
             const TextField(
+              keyboardType: TextInputType.number,
               decoration: InputDecoration(
                   hintText: 'Precio', icon: Icon(Icons.attach_money)),
             ),
-            // Specify the generic type of the data in the list.
-            // Expanded(
-            //   child: ImplicitlyAnimatedList(
-            //     // The current items in the list.
-            //     items: const ['Hola', 'Ejemplo', 'Mundo'],
-            //     // Called by the DiffUtil to decide whether two object represent the same item.
-            //     // For example, if your items have unique ids, this method should check their id equality.
-            //     areItemsTheSame: (a, b) => a == b,
-            //     // Called, as needed, to build list item widgets.
-            //     // List items are only built when they're scrolled into view.
-            //     itemBuilder: (context, animation, item, index) {
-            //       // Specifiy a transition to be used by the ImplicitlyAnimatedList.
-            //       // See the Transitions section on how to import this transition.
-            //       return SizeFadeTransition(
-            //         sizeFraction: 0.7,
-            //         curve: Curves.easeInOut,
-            //         animation: animation,
-            //         child: Text(item),
-            //       );
-            //     },
-            //     // An optional builder when an item was removed from the list.
-            //     // If not specified, the List uses the itemBuilder with
-            //     // the animation reversed.
-            //     removeItemBuilder: (context, animation, oldItem) {
-            //       return FadeTransition(
-            //         opacity: animation,
-            //         child: Text(oldItem),
-            //       );
-            //     },
-            //   ),
-            // )
           ]),
     );
   }
