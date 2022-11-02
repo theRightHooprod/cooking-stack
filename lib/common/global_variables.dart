@@ -1,11 +1,24 @@
 import 'package:flutter/material.dart';
 
+import '../views/admin_view.dart';
+import '../views/main_menu.dart';
+
 class GlobalVar {
   GlobalVar._();
 
   static Color black = const Color(0xff1c1c1c);
   static Color orange = const Color(0xffdc582a);
   static Color red = const Color(0xffd3273e);
+
+  static Widget AccountAkinator(String uid) {
+    if (uid == '1OxEdNtRtkedc0aDHvhMgtyjfwx1') {
+      return const Admin();
+    } else if (uid == 'oBtMtP8gWXZfWWJlJEzHeIvoVMx2') {
+      return const MainMenu();
+    } else {
+      return const MainMenu();
+    }
+  }
 
   static AppBar asd = AppBar(
     centerTitle: true,
