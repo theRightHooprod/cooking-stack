@@ -1,5 +1,4 @@
 import 'package:cooking_stack/common/global_variables.dart';
-import 'package:cooking_stack/views/main_menu.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -68,7 +67,8 @@ class LoginView extends StatelessWidget {
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const MainMenu()),
+                              builder: (context) =>
+                                  GlobalVar.AccountAkinator(value.user!.uid)),
                         );
                       }).onError((error, stackTrace) {
                         ScaffoldMessenger.of(context).showSnackBar(
