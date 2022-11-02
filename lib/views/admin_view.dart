@@ -37,6 +37,16 @@ class _AddFoodState extends State<AddFood> {
   final ImagePicker _picker = ImagePicker();
   XFile? capturedImage;
 
+  var productName = TextEditingController();
+  var productPrice = TextEditingController();
+
+  @override
+  dispose() {
+    productName.dispose();
+    productPrice.dispose();
+    super.dispose();
+  }
+
   Future<Container> previewImage() async {
     final LostDataResponse response = await _picker.retrieveLostData();
     if (response.isEmpty) {
@@ -110,14 +120,16 @@ class _AddFoodState extends State<AddFood> {
                   },
                 )),
             const SizedBox(height: 10.0),
-            const TextField(
-              decoration: InputDecoration(
+            TextField(
+              controller: productName,
+              decoration: const InputDecoration(
                   hintText: 'Nombre del alimento/producto',
                   icon: Icon(Icons.abc)),
             ),
-            const TextField(
+            TextField(
+              controller: productPrice,
               keyboardType: TextInputType.number,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                   hintText: 'Precio', icon: Icon(Icons.attach_money)),
             ),
           ]),
