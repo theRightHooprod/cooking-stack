@@ -36,9 +36,12 @@ class AddFood extends StatefulWidget {
 class _AddFoodState extends State<AddFood> {
   final ImagePicker _picker = ImagePicker();
   XFile? capturedImage;
+  List<Widget> descriptionsBank = [];
+  int savedIndex = 0;
 
   var productName = TextEditingController();
   var productPrice = TextEditingController();
+  var currentDescription = TextEditingController();
 
   @override
   dispose() {
@@ -63,7 +66,7 @@ class _AddFoodState extends State<AddFood> {
                 size: 50,
               ))
           : Container(
-              height: 200,
+              height: 175,
               decoration: BoxDecoration(
                   border: Border.all(color: GlobalVar.orange, width: 4),
                   borderRadius: const BorderRadius.all(
@@ -79,7 +82,7 @@ class _AddFoodState extends State<AddFood> {
       capturedImage = response.files!.first;
       setState(() {});
       return Container(
-        height: 200,
+        height: 175,
         decoration: BoxDecoration(
             border: Border.all(color: GlobalVar.orange, width: 4),
             borderRadius: const BorderRadius.all(
@@ -123,7 +126,7 @@ class _AddFoodState extends State<AddFood> {
               height: 20,
             ),
             const Text(
-              'Generalidades',
+              'Propiedades',
               style: TextStyle(
                 fontWeight: FontWeight.w700,
                 fontSize: 16,
@@ -134,22 +137,23 @@ class _AddFoodState extends State<AddFood> {
             ),
             TextField(
               controller: productName,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                   hintText: 'Nombre del alimento/producto',
-                  icon: Icon(Icons.abc)),
+                  icon: Icon(Icons.abc, color: GlobalVar.orange)),
             ),
             TextField(
               controller: productPrice,
               keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                  hintText: 'Precio', icon: Icon(Icons.attach_money)),
+              decoration: InputDecoration(
+                  hintText: 'Precio',
+                  icon: Icon(Icons.attach_money, color: GlobalVar.orange)),
             ),
             const SizedBox(
               height: 20,
             ),
-            const Text(
-              'Propiedades',
-              style: TextStyle(
+            Text(
+              'Añade una descripción (${descriptionsBank.length})',
+              style: const TextStyle(
                 fontWeight: FontWeight.w700,
                 fontSize: 16,
               ),
@@ -157,6 +161,44 @@ class _AddFoodState extends State<AddFood> {
             const SizedBox(
               height: 20,
             ),
+            Column(children: descriptionsBank),
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: currentDescription,
+                    decoration: InputDecoration(
+                        hintText: 'Escribe una descripción',
+                        icon:
+                            Icon(Icons.list_outlined, color: GlobalVar.orange)),
+                  ),
+                ),
+                const SizedBox(width: 20),
+                IconButton(
+                    onPressed: () {
+                      setState(() {
+                        descriptionsBank.add(ListTile(
+                          leading: const Icon(
+                            Icons.arrow_forward_outlined,
+                          ),
+                          title: Text(currentDescription.text),
+                          trailing: IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  descriptionsBank.removeLast();
+                                });
+                              },
+                              icon: const Icon(
+                                Icons.delete,
+                              )),
+                        ));
+                      });
+                    },
+                    icon: Icon(Icons.add, color: GlobalVar.orange)),
+              ],
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(onPressed: () {}, child: const Text('Agregar'))
           ]),
     );
   }
