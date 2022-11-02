@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:cooking_stack/common/firebase.dart';
 import 'package:flutter/material.dart';
 
 import '../common/global_variables.dart';
@@ -37,6 +39,7 @@ class _AddFoodState extends State<AddFood> {
   final ImagePicker _picker = ImagePicker();
   XFile? capturedImage;
   List<Widget> descriptionsBank = [];
+  List<String> descriptionsBankStrings = [];
   int savedIndex = 0;
 
   var productName = TextEditingController();
@@ -47,6 +50,7 @@ class _AddFoodState extends State<AddFood> {
   dispose() {
     productName.dispose();
     productPrice.dispose();
+    currentDescription.dispose();
     super.dispose();
   }
 
@@ -152,7 +156,7 @@ class _AddFoodState extends State<AddFood> {
               height: 20,
             ),
             Text(
-              'Añade una descripción (${descriptionsBank.length})',
+              'Añade una descripción (${descriptionsBankStrings.length})',
               style: const TextStyle(
                 fontWeight: FontWeight.w700,
                 fontSize: 16,
@@ -161,7 +165,26 @@ class _AddFoodState extends State<AddFood> {
             const SizedBox(
               height: 20,
             ),
-            Column(children: descriptionsBank),
+            Column(
+                children: descriptionsBank = descriptionsBankStrings
+                    .map(
+                      (description) => ListTile(
+                        leading: const Icon(
+                          Icons.arrow_forward_outlined,
+                        ),
+                        title: Text(description),
+                        trailing: IconButton(
+                            onPressed: () {
+                              setState(() {
+                                descriptionsBankStrings.removeLast();
+                              });
+                            },
+                            icon: const Icon(
+                              Icons.delete,
+                            )),
+                      ),
+                    )
+                    .toList()),
             Row(
               children: [
                 Expanded(
@@ -177,28 +200,33 @@ class _AddFoodState extends State<AddFood> {
                 IconButton(
                     onPressed: () {
                       setState(() {
-                        descriptionsBank.add(ListTile(
-                          leading: const Icon(
-                            Icons.arrow_forward_outlined,
-                          ),
-                          title: Text(currentDescription.text),
-                          trailing: IconButton(
-                              onPressed: () {
-                                setState(() {
-                                  descriptionsBank.removeLast();
-                                });
-                              },
-                              icon: const Icon(
-                                Icons.delete,
-                              )),
-                        ));
+                        descriptionsBankStrings.add(currentDescription.text);
                       });
                     },
                     icon: Icon(Icons.add, color: GlobalVar.orange)),
               ],
             ),
             const SizedBox(height: 20),
-            ElevatedButton(onPressed: () {}, child: const Text('Agregar'))
+            ElevatedButton(
+                onPressed: () {
+                  if (productName.text.isNotEmpty &&
+                      productPrice.text.isNotEmpty &&
+                      capturedImage != null) {
+                    final bytes = File(capturedImage!.path).readAsBytesSync();
+
+                    MyFirebase.addMiscellaneous(
+                        name: productName.text,
+                        price: int.parse(productPrice.text),
+                        picture: base64Encode(bytes),
+                        description: descriptionsBankStrings);
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text('Producto agregado con exito'),
+                    ));
+                  }
+                },
+                child: const Text('Agregar'))
           ]),
     );
   }
