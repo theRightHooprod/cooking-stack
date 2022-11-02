@@ -119,7 +119,19 @@ class _AddFoodState extends State<AddFood> {
                     }
                   },
                 )),
-            const SizedBox(height: 10.0),
+            const SizedBox(
+              height: 20,
+            ),
+            const Text(
+              'Generalidades',
+              style: TextStyle(
+                fontWeight: FontWeight.w700,
+                fontSize: 16,
+              ),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
             TextField(
               controller: productName,
               decoration: const InputDecoration(
@@ -131,6 +143,19 @@ class _AddFoodState extends State<AddFood> {
               keyboardType: TextInputType.number,
               decoration: const InputDecoration(
                   hintText: 'Precio', icon: Icon(Icons.attach_money)),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            const Text(
+              'Propiedades',
+              style: TextStyle(
+                fontWeight: FontWeight.w700,
+                fontSize: 16,
+              ),
+            ),
+            const SizedBox(
+              height: 20,
             ),
           ]),
     );
