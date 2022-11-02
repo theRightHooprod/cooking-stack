@@ -5,6 +5,7 @@ class GlobalVar {
 
   static Color black = const Color(0xff1c1c1c);
   static Color orange = const Color(0xffdc582a);
+  static Color red = const Color(0xffd3273e);
 
   static AppBar asd = AppBar(
     centerTitle: true,
