@@ -81,7 +81,7 @@ class _MainMenuState extends State<MainMenu> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const Admin()),
+                              builder: (context) => const Settings()),
                         );
                         break;
                     }
