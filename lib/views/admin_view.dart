@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:cooking_stack/common/firebase.dart';
+import 'package:cooking_stack/views/settings_view.dart';
 import 'package:flutter/material.dart';
 
 import '../common/global_variables.dart';
@@ -16,14 +17,30 @@ class Admin extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: GlobalVar.asd,
-        floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const AddFood()),
-              );
-            },
-            child: const Icon(Icons.add)),
+        floatingActionButton: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            FloatingActionButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const AddFood()),
+                  );
+                },
+                heroTag: null,
+                child: const Icon(Icons.add)),
+            const SizedBox(height: 10),
+            FloatingActionButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const Settings()),
+                  );
+                },
+                heroTag: null,
+                child: const Icon(Icons.settings)),
+          ],
+        ),
         body: const Center(child: Text('Hola admin')));
   }
 }
