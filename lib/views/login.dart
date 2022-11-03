@@ -70,7 +70,7 @@ class LoginView extends StatelessWidget {
                               builder: (context) =>
                                   GlobalVar.AccountAkinator(value.user!.uid)),
                         );
-                      }).onError((error, stackTrace) {
+                      }).catchError((error) {
                         ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text(error.toString())));
                       });
