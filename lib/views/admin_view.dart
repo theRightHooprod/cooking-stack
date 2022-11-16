@@ -1,17 +1,27 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cooking_stack/common/firebase.dart';
 import 'package:cooking_stack/views/settings_view.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../common/global_variables.dart';
 import 'package:image_picker/image_picker.dart';
 
-class Admin extends StatelessWidget {
+class Admin extends StatefulWidget {
   const Admin({
     super.key,
   });
+
+  @override
+  State<Admin> createState() => _AdminState();
+}
+
+class _AdminState extends State<Admin> {
+  final Stream<QuerySnapshot> _usersStream =
+      FirebaseFirestore.instance.collection('miscellaneous').snapshots();
 
   @override
   Widget build(BuildContext context) {
@@ -34,14 +44,46 @@ class Admin extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const Settings()),
+                    MaterialPageRoute(
+                        builder: (context) => const SettingsView()),
                   );
                 },
                 heroTag: null,
                 child: const Icon(Icons.settings)),
           ],
         ),
-        body: const Center(child: Text('Hola admin')));
+        body: StreamBuilder(
+          stream: _usersStream,
+          builder:
+              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (snapshot.hasError) {
+              return const Center(child: Text('Algo ha salido mal 😞'));
+            }
+
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: Text("Cargando... 😽"));
+            }
+
+            return ListView(
+              children: snapshot.data!.docs.map((DocumentSnapshot document) {
+                Map<String, dynamic> data =
+                    document.data()! as Map<String, dynamic>;
+                return ListTile(
+                  title: Text(data['name']),
+                  subtitle: Text('Contiene: ${data['properties'].toString()}'),
+                  leading: data['picture'] != ''
+                      ? Image.memory(base64Decode(data['picture']))
+                      : const Icon(
+                          Icons.cancel,
+                          size: 40,
+                          color: Colors.red,
+                        ),
+                  trailing: Text('\$ ${data['price']}'),
+                );
+              }).toList(),
+            );
+          },
+        ));
   }
 }
 
@@ -68,55 +110,44 @@ class _AddFoodState extends State<AddFood> {
     productName.dispose();
     productPrice.dispose();
     currentDescription.dispose();
+    capturedImage = null;
     super.dispose();
   }
 
-  Future<Container> previewImage() async {
+  Future<XFile> retrieveLostData() async {
     final LostDataResponse response = await _picker.retrieveLostData();
-    if (response.isEmpty) {
-      return capturedImage == null
-          ? Container(
-              padding: const EdgeInsets.all(50),
-              decoration: BoxDecoration(
-                  border: Border.all(color: GlobalVar.orange, width: 4),
-                  borderRadius: const BorderRadius.all(
-                    Radius.circular(20),
-                  )),
-              child: const Icon(
-                Icons.camera_alt,
-                size: 50,
-              ))
-          : Container(
-              height: 175,
-              decoration: BoxDecoration(
-                  border: Border.all(color: GlobalVar.orange, width: 4),
-                  borderRadius: const BorderRadius.all(
-                    Radius.circular(20),
-                  ),
-                  image: DecorationImage(
-                    image: FileImage(File(capturedImage!.path)),
-                    fit: BoxFit.fitWidth,
-                  )),
-            );
-    }
-    if (response.files != null) {
-      capturedImage = response.files!.first;
-      setState(() {});
-      return Container(
-        height: 175,
-        decoration: BoxDecoration(
-            border: Border.all(color: GlobalVar.orange, width: 4),
-            borderRadius: const BorderRadius.all(
-              Radius.circular(20),
-            ),
-            image: DecorationImage(
-              image: FileImage(File(capturedImage!.path)),
-              fit: BoxFit.fitWidth,
-            )),
-      );
+    if (!response.isEmpty && response.file != null) {
+      return response.files!.first;
     } else {
-      throw Error();
+      return capturedImage!;
     }
+  }
+
+  Container previewImage() {
+    return capturedImage == null
+        ? Container(
+            padding: const EdgeInsets.all(50),
+            decoration: BoxDecoration(
+                border: Border.all(color: GlobalVar.orange, width: 4),
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(20),
+                )),
+            child: const Icon(
+              Icons.camera_alt,
+              size: 50,
+            ))
+        : Container(
+            height: 175,
+            decoration: BoxDecoration(
+                border: Border.all(color: GlobalVar.orange, width: 4),
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(20),
+                ),
+                image: DecorationImage(
+                  image: FileImage(File(capturedImage!.path)),
+                  fit: BoxFit.fitWidth,
+                )),
+          );
   }
 
   @override
@@ -129,20 +160,27 @@ class _AddFoodState extends State<AddFood> {
             GestureDetector(
                 onTap: (() async {
                   capturedImage = await _picker.pickImage(
-                      source: ImageSource.camera, requestFullMetadata: false);
+                      source: ImageSource.camera,
+                      requestFullMetadata: false,
+                      imageQuality: 1);
                   setState(() {});
                 }),
-                child: FutureBuilder(
-                  future: previewImage(),
-                  builder:
-                      (BuildContext context, AsyncSnapshot<Widget> snapshot) {
-                    if (snapshot.hasData) {
-                      return snapshot.data!;
-                    } else {
-                      return const CircularProgressIndicator();
-                    }
-                  },
-                )),
+                child:
+                    !kIsWeb && defaultTargetPlatform == TargetPlatform.android
+                        ? FutureBuilder(
+                            builder: (BuildContext context,
+                                AsyncSnapshot<void> snapshot) {
+                              switch (snapshot.connectionState) {
+                                case ConnectionState.none:
+                                case ConnectionState.done:
+                                  return previewImage();
+                                default:
+                                  return const Center(
+                                      child: CircularProgressIndicator());
+                              }
+                            },
+                          )
+                        : previewImage()),
             const SizedBox(
               height: 20,
             ),
@@ -229,17 +267,26 @@ class _AddFoodState extends State<AddFood> {
                   if (productName.text.isNotEmpty &&
                       productPrice.text.isNotEmpty &&
                       capturedImage != null) {
-                    final bytes = File(capturedImage!.path).readAsBytesSync();
+                    Uint8List bytes =
+                        File(capturedImage!.path).readAsBytesSync();
 
                     MyFirebase.addMiscellaneous(
                         name: productName.text,
                         price: int.parse(productPrice.text),
-                        picture: base64Encode(bytes),
+                        picture: base64Encode(bytes).length < 1048487
+                            ? base64Encode(bytes)
+                            : ' ',
                         description: descriptionsBankStrings);
                     Navigator.pop(context);
                     ScaffoldMessenger.of(context).hideCurrentSnackBar();
                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                       content: Text('Producto agregado con exito'),
+                    ));
+                  } else {
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content:
+                          Text('El nombre, precio y foto son obligatorios'),
                     ));
                   }
                 },
