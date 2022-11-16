@@ -15,8 +15,8 @@ class MyFirebase {
     try {
       if (name.isEmpty) {
         throw Exception('El nombre no puede estar vacío');
-      } else if (picture.isEmpty) {
-        throw Exception('La imagen no puede estar vacía');
+        //   } else if (picture.isEmpty) {
+        //     throw Exception('La imagen no puede estar vacía');
       } else {
         miscellaneous.add({
           'name': await MyUtils.cutAndLowerString(name),
