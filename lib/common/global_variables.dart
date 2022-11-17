@@ -10,7 +10,7 @@ class GlobalVar {
   static Color orange = const Color(0xffdc582a);
   static Color red = const Color(0xffd3273e);
 
-  static Widget AccountAkinator(String uid) {
+  static Widget accountAkinator(String uid) {
     if (uid == '1OxEdNtRtkedc0aDHvhMgtyjfwx1') {
       return const Admin();
     } else if (uid == 'oBtMtP8gWXZfWWJlJEzHeIvoVMx2') {
