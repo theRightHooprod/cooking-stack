@@ -24,3 +24,25 @@ class MyUtils {
     return fixed;
   }
 }
+
+class Order {
+  double totalPrice;
+  DateTime created = DateTime.now();
+  List<Map<String, dynamic>> products;
+  String clientname;
+  String whatsappNumber;
+
+  Order(
+      {required this.totalPrice,
+      required this.products,
+      required this.clientname,
+      required this.whatsappNumber});
+
+  Map<String, dynamic> toJson() => {
+        'totalprice': totalPrice,
+        'created': created,
+        'products': products,
+        'clientname': clientname,
+        'whatsappnumber': whatsappNumber
+      };
+}
