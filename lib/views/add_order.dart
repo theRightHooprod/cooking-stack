@@ -36,17 +36,17 @@ class _ShoopingCarState extends State<ShoopingCar> {
                 )
               ],
             ),
+            const SizedBox(height: 20),
             Expanded(
-                child: ListView(
-              padding: const EdgeInsets.all(20),
-              children: [
-                data.isEmpty
-                    ? Text(
-                        'Comienza agregando un artículo del menú 😵‍💫',
-                        style: Theme.of(context).textTheme.titleLarge,
-                        textAlign: TextAlign.center,
-                      )
-                    : ListView.builder(
+              child: data.isEmpty
+                  ? Text(
+                      'Comienza agregando productos 🥰',
+                      style: Theme.of(context).textTheme.titleLarge,
+                      textAlign: TextAlign.center,
+                    )
+                  : Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: ListView.builder(
                         shrinkWrap: true,
                         itemCount: data.length,
                         itemBuilder: (context, index) {
@@ -76,8 +76,8 @@ class _ShoopingCarState extends State<ShoopingCar> {
                           );
                         },
                       ),
-              ],
-            )),
+                    ),
+            ),
             ElevatedButton(
                 style: ButtonStyle(
                     padding: MaterialStateProperty.all(
