@@ -68,9 +68,10 @@ class LoginView extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                               builder: (context) =>
-                                  GlobalVar.AccountAkinator(value.user!.uid)),
+                                  GlobalVar.accountAkinator(value.user!.uid)),
                         );
                       }).catchError((error) {
+                        ScaffoldMessenger.of(context).hideCurrentSnackBar();
                         ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text(error.toString())));
                       });

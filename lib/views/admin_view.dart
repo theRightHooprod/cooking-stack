@@ -78,7 +78,18 @@ class _AdminState extends State<Admin> {
                           size: 40,
                           color: Colors.red,
                         ),
-                  trailing: Text('\$ ${data['price']}'),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text('\$ ${data['price']}'),
+                      IconButton(
+                        icon: const Icon(Icons.delete),
+                        onPressed: () {
+                          setState(() {});
+                        },
+                      ),
+                    ],
+                  ),
                 );
               }).toList(),
             );
@@ -231,7 +242,8 @@ class _AddFoodState extends State<AddFood> {
                         trailing: IconButton(
                             onPressed: () {
                               setState(() {
-                                descriptionsBankStrings.removeLast();
+                                descriptionsBankStrings.removeWhere(
+                                    (element) => element == description);
                               });
                             },
                             icon: const Icon(
@@ -272,7 +284,7 @@ class _AddFoodState extends State<AddFood> {
 
                     MyFirebase.addMiscellaneous(
                         name: productName.text,
-                        price: int.parse(productPrice.text),
+                        price: double.parse(productPrice.text),
                         picture: base64Encode(bytes).length < 1048487
                             ? base64Encode(bytes)
                             : ' ',

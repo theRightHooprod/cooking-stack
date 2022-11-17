@@ -2,40 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../common/global_variables.dart';
 
-class AddOrder extends StatelessWidget {
-  const AddOrder({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: GlobalVar.asd,
-      body: Center(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            const SizedBox(height: 20),
-            const Icon(Icons.shopping_cart_outlined, size: 60),
-            Expanded(
-                child: ListView(
-              padding: const EdgeInsets.all(20),
-              children: [
-                Text(
-                  'Comienza agregando un artículo del menú 😵‍💫',
-                  style: Theme.of(context).textTheme.titleLarge,
-                  textAlign: TextAlign.center,
-                )
-              ],
-            ))
-          ],
-        ),
-      ),
-      floatingActionButton:
-          FloatingActionButton(onPressed: () {}, child: const Icon(Icons.add)),
-    );
-  }
-}
-
 class pene extends StatelessWidget {
   const pene({
     super.key,
