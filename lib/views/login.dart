@@ -64,11 +64,9 @@ class LoginView extends StatelessWidget {
                                   .trimRight(),
                               password: passwordController.text)
                           .then((value) {
-                        Navigator.pushReplacement(
+                        Navigator.pushReplacementNamed(
                           context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  GlobalVar.accountAkinator(value.user!.uid)),
+                          GlobalVar.accountAkinator(value.user!.uid),
                         );
                       }).catchError((error) {
                         ScaffoldMessenger.of(context).hideCurrentSnackBar();
