@@ -6,10 +6,11 @@ class MyFirebase {
 
   static var miscellaneous =
       FirebaseFirestore.instance.collection('miscellaneous');
+  static var orders = FirebaseFirestore.instance.collection('orders');
 
   static Future<void> addMiscellaneous(
       {required String name,
-      int price = 0,
+      double price = 0,
       required String picture,
       required List<String> description}) async {
     try {
@@ -26,6 +27,14 @@ class MyFirebase {
           'price': price
         });
       }
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  static Future<void> addOrder({required Order order}) async {
+    try {
+      orders.add(order.toJson());
     } catch (error) {
       rethrow;
     }
