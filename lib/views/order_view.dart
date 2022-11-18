@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:time_elapsed/time_elapsed.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../common/global_variables.dart';
 
@@ -117,6 +118,12 @@ class ExpandOrder extends StatelessWidget {
 
   const ExpandOrder({super.key, required this.data});
 
+  Future<void> launchWhatsApp(String number) async {
+    if (!await launchUrl(Uri.parse('https://wa.me/$number'))) {
+      throw 'Could not launch whatsapp';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     List<dynamic> products = data['products'] as List<dynamic>;
@@ -168,12 +175,16 @@ class ExpandOrder extends StatelessWidget {
           const SizedBox(
             height: 20,
           ),
-          Text(
-            data['whatsappnumber'],
-            style: const TextStyle(
-              fontWeight: FontWeight.w400,
-              fontSize: 16,
+          TextButton(
+            child: Text(
+              data['whatsappnumber'],
+              textAlign: TextAlign.left,
+              style: const TextStyle(
+                fontWeight: FontWeight.w400,
+                fontSize: 16,
+              ),
             ),
+            onPressed: () => launchWhatsApp(data['whatsappnumber']),
           ),
           const SizedBox(
             height: 20,
