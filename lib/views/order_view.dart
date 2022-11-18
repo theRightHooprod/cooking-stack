@@ -88,13 +88,13 @@ class CurrentOrders extends StatelessWidget {
                           children: [
                             Text('Cliente: $clientname'),
                             Text(
-                                'Estado: ${data['satus'] == null ? 'En preparación ${TimeElapsed.fromDateTime(date)}' : data['satus'] == 1 ? 'Finalizado' : 'Cancelado'}'),
+                                'Estado: ${data['status'] == null ? 'En preparación ${TimeElapsed.fromDateTime(date)}' : data['status'] == 1 ? 'Finalizado' : 'Cancelado'}'),
                           ],
                         ),
                         leading: Icon(
-                          data['satus'] == null
+                          data['status'] == null
                               ? Icons.access_time
-                              : data['satus'] == 1
+                              : data['status'] == 1
                                   ? Icons.done
                                   : Icons.cancel_outlined,
                           color: GlobalVar.black,
@@ -209,9 +209,9 @@ class ExpandOrder extends StatelessWidget {
             height: 20,
           ),
           Text(
-            data['satus'] == null
+            data['status'] == null
                 ? 'En preparación'
-                : data['satus'] == 1
+                : data['status'] == 1
                     ? 'Finalizado'
                     : 'Cancelado',
             style: const TextStyle(
