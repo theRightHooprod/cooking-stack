@@ -50,6 +50,7 @@ class CurrentOrders extends StatelessWidget {
                   List<dynamic> products = data['products'] as List<dynamic>;
 
                   String totalProductos = '';
+                  String clientname = data['clientname'];
 
                   for (int i = 0; i < products.length; i++) {
                     if (i < products.length - 1) {
@@ -62,6 +63,9 @@ class CurrentOrders extends StatelessWidget {
                   if (totalProductos.length > 20) {
                     totalProductos = '${totalProductos.substring(0, 20)}...';
                   }
+                  if (clientname.length > 16) {
+                    clientname = '${clientname.substring(0, 16)}...';
+                  }
 
                   DateTime date = data['created'].toDate();
 
@@ -69,10 +73,17 @@ class CurrentOrders extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.all(20.0),
                       child: ListTile(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ExpandOrder(data: data)),
+                          );
+                        },
                         title: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Cliente: ${data['clientname']}'),
+                            Text('Cliente: $clientname'),
                             Text(
                                 'Estado: ${data['satus'] == null ? 'En preparación ${TimeElapsed.fromDateTime(date)}' : data['satus'] == 1 ? 'Finalizado' : 'Cancelado'}'),
                           ],
@@ -95,5 +106,151 @@ class CurrentOrders extends StatelessWidget {
             },
           ),
         ));
+  }
+}
+
+class ExpandOrder extends StatelessWidget {
+  final Map<String, dynamic> data;
+
+  const ExpandOrder({super.key, required this.data});
+
+  @override
+  Widget build(BuildContext context) {
+    List<dynamic> products = data['products'] as List<dynamic>;
+    String totalProductos = '';
+
+    for (int i = 0; i < products.length; i++) {
+      if (i < products.length - 1) {
+        totalProductos += products[i]['name'] + ', ';
+      } else {
+        totalProductos += products[i]['name'];
+      }
+    }
+
+    return Scaffold(
+      appBar: GlobalVar.asd,
+      body: ListView(
+        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+        children: [
+          const SizedBox(
+            height: 20,
+          ),
+          const Text(
+            'Nombre del cliente',
+            style: TextStyle(
+              fontWeight: FontWeight.w700,
+              fontSize: 16,
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          Text(
+            data['clientname'],
+            style: const TextStyle(
+              fontWeight: FontWeight.w400,
+              fontSize: 16,
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          const Text(
+            'WhatsApp del cliente',
+            style: TextStyle(
+              fontWeight: FontWeight.w700,
+              fontSize: 16,
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          Text(
+            data['whatsappnumber'],
+            style: const TextStyle(
+              fontWeight: FontWeight.w400,
+              fontSize: 16,
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          const Text(
+            'Precio Total',
+            style: TextStyle(
+              fontWeight: FontWeight.w700,
+              fontSize: 16,
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          Text(
+            '\$${data['totalprice']}',
+            style: const TextStyle(
+              fontWeight: FontWeight.w400,
+              fontSize: 16,
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          const Text(
+            'Estado:',
+            style: TextStyle(
+              fontWeight: FontWeight.w700,
+              fontSize: 16,
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          Text(
+            data['satus'] == null
+                ? 'En preparación'
+                : data['satus'] == 1
+                    ? 'Finalizado'
+                    : 'Cancelado',
+            style: const TextStyle(
+              fontWeight: FontWeight.w400,
+              fontSize: 16,
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          const Text(
+            'Productos ',
+            style: TextStyle(
+              fontWeight: FontWeight.w700,
+              fontSize: 16,
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          ListView.builder(
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: products.length,
+            itemBuilder: (context, index) {
+              return Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ListTile(
+                    title: Text(products[index]['name']),
+                    subtitle: Text(totalProductos),
+                    trailing: Text('\$ ${products[index]['price']}'),
+                  ),
+                ),
+              );
+            },
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+        ],
+      ),
+    );
   }
 }
