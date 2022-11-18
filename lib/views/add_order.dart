@@ -335,7 +335,8 @@ class _CheckOutState extends State<CheckOut> {
                                   totalPrice: totalprice,
                                   whatsappNumber: clientWhatsAppController.text
                                       .trimLeft()
-                                      .trimRight()))
+                                      .trimRight()
+                                      .replaceAll(' ', '')))
                           .onError((error, stackTrace) {
                         ScaffoldMessenger.of(context).hideCurrentSnackBar();
                         ScaffoldMessenger.of(context).showSnackBar(
