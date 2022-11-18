@@ -16,7 +16,7 @@ class GlobalVar {
     } else if (uid == 'oBtMtP8gWXZfWWJlJEzHeIvoVMx2') {
       return '/';
     } else {
-      return '/';
+      return 'kitchen';
     }
   }
 
