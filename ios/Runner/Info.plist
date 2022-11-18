@@ -47,6 +47,10 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>whatsapp</string>
+	</array>
 	<key>NSCameraUsageDescription</key>
 	<string>$CookingStack would like to use the camera</string>
 </dict>
