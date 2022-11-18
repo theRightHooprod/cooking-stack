@@ -1,4 +1,5 @@
 import 'package:cooking_stack/views/admin_view.dart';
+import 'package:cooking_stack/views/kitchen_view.dart';
 import 'package:cooking_stack/views/login.dart';
 import 'package:cooking_stack/views/main_menu.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -22,11 +23,14 @@ void main() async {
             ? 'login'
             : user.uid == '1OxEdNtRtkedc0aDHvhMgtyjfwx1'
                 ? 'admin'
-                : '/',
+                : user.uid == 'oBtMtP8gWXZfWWJlJEzHeIvoVMx2'
+                    ? 'kitchen'
+                    : '/',
         routes: {
           '/': (context) => const MainMenu(),
           'admin': (context) => const Admin(),
-          'login': (context) => const LoginView()
+          'login': (context) => const LoginView(),
+          'kitchen': (context) => const KitchenView()
         }));
   });
 }
