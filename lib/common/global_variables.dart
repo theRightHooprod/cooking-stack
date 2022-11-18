@@ -14,7 +14,7 @@ class GlobalVar {
     if (uid == '1OxEdNtRtkedc0aDHvhMgtyjfwx1') {
       return 'admin';
     } else if (uid == 'oBtMtP8gWXZfWWJlJEzHeIvoVMx2') {
-      return '/kitchen';
+      return 'kitchen';
     } else {
       return '/';
     }
