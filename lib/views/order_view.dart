@@ -33,7 +33,10 @@ class CurrentOrders extends StatelessWidget {
               }
 
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: Text("Cargando... 😽"));
+                return Center(
+                    child: CircularProgressIndicator(
+                  color: GlobalVar.orange,
+                ));
               }
 
               if (snapshot.data!.docs.isEmpty) {
