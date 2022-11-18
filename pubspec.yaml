@@ -40,6 +40,8 @@ dependencies:
   firebase_auth: ^3.11.2
   cloud_firestore: 
   image_picker: ^0.8.6
+  time_elapsed: ^0.2.6
+  url_launcher: ^6.1.6
 
 dev_dependencies:
   flutter_test:
