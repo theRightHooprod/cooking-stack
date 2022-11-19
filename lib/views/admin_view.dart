@@ -85,7 +85,31 @@ class _AdminState extends State<Admin> {
                       IconButton(
                         icon: const Icon(Icons.delete),
                         onPressed: () {
-                          setState(() {});
+                          FirebaseFirestore.instance
+                              .collection('miscellaneous')
+                              .doc(document.id)
+                              .delete()
+                              .then((value) => {
+                                    ScaffoldMessenger.of(context)
+                                        .hideCurrentSnackBar(),
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(SnackBar(
+                                      content: Text(
+                                        'El producto se ha eliminado correctamente',
+                                        style:
+                                            TextStyle(color: GlobalVar.black),
+                                      ),
+                                      backgroundColor: Colors.green,
+                                    )),
+                                  })
+                              .catchError((error) => {
+                                    ScaffoldMessenger.of(context)
+                                        .hideCurrentSnackBar(),
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                            content: Text(
+                                                'Producto agregado con exito')))
+                                  });
                         },
                       ),
                     ],
