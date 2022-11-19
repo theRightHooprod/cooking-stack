@@ -1,14 +1,11 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cooking_stack/common/firebase.dart';
 import 'package:cooking_stack/views/settings_view.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../common/global_variables.dart';
-import 'package:image_picker/image_picker.dart';
 
 class Admin extends StatefulWidget {
   const Admin({
@@ -130,8 +127,8 @@ class AddFood extends StatefulWidget {
 }
 
 class _AddFoodState extends State<AddFood> {
-  final ImagePicker _picker = ImagePicker();
-  XFile? capturedImage;
+//   final ImagePicker _picker = ImagePicker();
+//   XFile? capturedImage;
   List<Widget> descriptionsBank = [];
   List<String> descriptionsBankStrings = [];
   int savedIndex = 0;
@@ -145,45 +142,45 @@ class _AddFoodState extends State<AddFood> {
     productName.dispose();
     productPrice.dispose();
     currentDescription.dispose();
-    capturedImage = null;
+    // capturedImage = null;
     super.dispose();
   }
 
-  Future<XFile> retrieveLostData() async {
-    final LostDataResponse response = await _picker.retrieveLostData();
-    if (!response.isEmpty && response.file != null) {
-      return response.files!.first;
-    } else {
-      return capturedImage!;
-    }
-  }
+//   Future<XFile> retrieveLostData() async {
+//     final LostDataResponse response = await _picker.retrieveLostData();
+//     if (!response.isEmpty && response.file != null) {
+//       return response.files!.first;
+//     } else {
+//       return capturedImage!;
+//     }
+//   }
 
-  Container previewImage() {
-    return capturedImage == null
-        ? Container(
-            padding: const EdgeInsets.all(50),
-            decoration: BoxDecoration(
-                border: Border.all(color: GlobalVar.orange, width: 4),
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(20),
-                )),
-            child: const Icon(
-              Icons.camera_alt,
-              size: 50,
-            ))
-        : Container(
-            height: 175,
-            decoration: BoxDecoration(
-                border: Border.all(color: GlobalVar.orange, width: 4),
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(20),
-                ),
-                image: DecorationImage(
-                  image: FileImage(File(capturedImage!.path)),
-                  fit: BoxFit.fitWidth,
-                )),
-          );
-  }
+//   Container previewImage() {
+//     return capturedImage == null
+//         ? Container(
+//             padding: const EdgeInsets.all(50),
+//             decoration: BoxDecoration(
+//                 border: Border.all(color: GlobalVar.orange, width: 4),
+//                 borderRadius: const BorderRadius.all(
+//                   Radius.circular(20),
+//                 )),
+//             child: const Icon(
+//               Icons.camera_alt,
+//               size: 50,
+//             ))
+//         : Container(
+//             height: 175,
+//             decoration: BoxDecoration(
+//                 border: Border.all(color: GlobalVar.orange, width: 4),
+//                 borderRadius: const BorderRadius.all(
+//                   Radius.circular(20),
+//                 ),
+//                 image: DecorationImage(
+//                   image: FileImage(File(capturedImage!.path)),
+//                   fit: BoxFit.fitWidth,
+//                 )),
+//           );
+//   }
 
   @override
   Widget build(BuildContext context) {
@@ -192,33 +189,33 @@ class _AddFoodState extends State<AddFood> {
       body: ListView(
           padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
           children: [
-            GestureDetector(
-                onTap: (() async {
-                  capturedImage = await _picker.pickImage(
-                      source: ImageSource.camera,
-                      requestFullMetadata: false,
-                      imageQuality: 1);
-                  setState(() {});
-                }),
-                child:
-                    !kIsWeb && defaultTargetPlatform == TargetPlatform.android
-                        ? FutureBuilder(
-                            builder: (BuildContext context,
-                                AsyncSnapshot<void> snapshot) {
-                              switch (snapshot.connectionState) {
-                                case ConnectionState.none:
-                                case ConnectionState.done:
-                                  return previewImage();
-                                default:
-                                  return const Center(
-                                      child: CircularProgressIndicator());
-                              }
-                            },
-                          )
-                        : previewImage()),
-            const SizedBox(
-              height: 20,
-            ),
+            // GestureDetector(
+            //     onTap: (() async {
+            //       capturedImage = await _picker.pickImage(
+            //           source: ImageSource.camera,
+            //           requestFullMetadata: false,
+            //           imageQuality: 1);
+            //       setState(() {});
+            //     }),
+            //     child:
+            //         !kIsWeb && defaultTargetPlatform == TargetPlatform.android
+            //             ? FutureBuilder(
+            //                 builder: (BuildContext context,
+            //                     AsyncSnapshot<void> snapshot) {
+            //                   switch (snapshot.connectionState) {
+            //                     case ConnectionState.none:
+            //                     case ConnectionState.done:
+            //                       return previewImage();
+            //                     default:
+            //                       return const Center(
+            //                           child: CircularProgressIndicator());
+            //                   }
+            //                 },
+            //               )
+            //             : previewImage()),
+            // const SizedBox(
+            //   height: 20,
+            // ),
             const Text(
               'Propiedades',
               style: TextStyle(
@@ -301,17 +298,14 @@ class _AddFoodState extends State<AddFood> {
             ElevatedButton(
                 onPressed: () {
                   if (productName.text.isNotEmpty &&
-                      productPrice.text.isNotEmpty &&
-                      capturedImage != null) {
-                    Uint8List bytes =
-                        File(capturedImage!.path).readAsBytesSync();
+                      productPrice.text.isNotEmpty) {
+                    // Uint8List bytes =
+                    //     File(capturedImage!.path).readAsBytesSync();
 
                     MyFirebase.addMiscellaneous(
                         name: productName.text,
                         price: double.parse(productPrice.text),
-                        picture: base64Encode(bytes).length < 1048487
-                            ? base64Encode(bytes)
-                            : ' ',
+                        picture: '',
                         description: descriptionsBankStrings);
                     Navigator.pop(context);
                     ScaffoldMessenger.of(context).hideCurrentSnackBar();
