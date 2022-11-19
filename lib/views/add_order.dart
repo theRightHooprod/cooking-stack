@@ -13,7 +13,7 @@ class ShoopingCar extends StatefulWidget {
 }
 
 class _ShoopingCarState extends State<ShoopingCar> {
-  List<Map<String, dynamic>> data = [];
+  late List<Map<String, dynamic>> data = [];
   double totalprice = 0;
 
   @override
@@ -53,7 +53,8 @@ class _ShoopingCarState extends State<ShoopingCar> {
                           return Card(
                             child: ListTile(
                               title: Text(data[index]['name']),
-                              subtitle: Text('${data[index]['properties']}'),
+                              subtitle: Text(MyUtils.getSingleString(
+                                  data[index]['properties'])),
                               trailing: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
@@ -118,9 +119,9 @@ class _ShoopingCarState extends State<ShoopingCar> {
               context,
               MaterialPageRoute(builder: (context) => const AddOrder()),
             ) as List<Map<String, dynamic>>;
-            data = dataFromSecondPage;
-            for (var i = 0; i < data.length; i++) {
-              totalprice += data[i]['price'];
+            data += dataFromSecondPage;
+            for (var i = 0; i < dataFromSecondPage.length; i++) {
+              totalprice += dataFromSecondPage[i]['price'];
             }
             setState(() {});
           },
@@ -171,31 +172,43 @@ class _AddOrderState extends State<AddOrder> {
         onWillPop: () async {
           return false;
         },
-        child: StreamBuilder(
-          stream: miscellaneousStream,
-          builder:
-              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-            if (snapshot.hasError) {
-              return const Center(child: Text('Algo ha salido mal 😞'));
-            }
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: StreamBuilder(
+            stream: miscellaneousStream,
+            builder:
+                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              if (snapshot.hasError) {
+                return const Center(child: Text('Algo ha salido mal 😞'));
+              }
 
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: Text("Cargando... 😽"));
-            }
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(
+                    child: CircularProgressIndicator(
+                  color: GlobalVar.orange,
+                ));
+              }
 
-            return ListView(
-              children: snapshot.data!.docs.map((DocumentSnapshot document) {
-                Map<String, dynamic> data =
-                    document.data()! as Map<String, dynamic>;
-                return ListTile(
-                  onTap: () => miscellaneousList.add(data),
-                  title: Text(data['name']),
-                  subtitle: Text('Contiene: ${data['properties'].toString()}'),
-                  trailing: Text('\$ ${data['price']}'),
-                );
-              }).toList(),
-            );
-          },
+              return ListView(
+                children: snapshot.data!.docs.map((DocumentSnapshot document) {
+                  Map<String, dynamic> data =
+                      document.data()! as Map<String, dynamic>;
+                  return Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: ListTile(
+                        onTap: () => miscellaneousList.add(data),
+                        title: Text(data['name']),
+                        subtitle: Text(
+                            'Contiene: ${MyUtils.getSingleString(data['properties'])}'),
+                        trailing: Text('\$ ${data['price']}'),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              );
+            },
+          ),
         ),
       ),
     );

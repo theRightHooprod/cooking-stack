@@ -4,6 +4,8 @@ import 'package:cooking_stack/views/settings_view.dart';
 import 'package:flutter/material.dart';
 import 'package:time_elapsed/time_elapsed.dart';
 
+import '../common/utils.dart';
+
 class KitchenView extends StatelessWidget {
   const KitchenView({super.key});
 
@@ -100,7 +102,7 @@ class KitchenView extends StatelessWidget {
                           children: [
                             Text('Cliente: $clientname'),
                             Text(
-                                'Estado: ${data['status'] == null ? 'En preparación ${TimeElapsed.fromDateTime(date)}' : data['status'] == 1 ? 'Finalizado' : 'Cancelado'}'),
+                                'Estado: ${data['status'] == null ? 'En preparación ${TimeElapsed.fromDateTime(date)}' : data['status'] == 1 ? 'Finalizado' : 'No posible'}'),
                           ],
                         ),
                         leading: Icon(
@@ -134,15 +136,6 @@ class KitchenExpandOrder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<dynamic> products = data['products'] as List<dynamic>;
-    String totalProductos = '';
-
-    for (int i = 0; i < products.length; i++) {
-      if (i < products.length - 1) {
-        totalProductos += products[i]['name'] + ', ';
-      } else {
-        totalProductos += products[i]['name'];
-      }
-    }
 
     return Scaffold(
       appBar: GlobalVar.asd,
@@ -172,7 +165,8 @@ class KitchenExpandOrder extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: ListTile(
                     title: Text(products[index]['name']),
-                    subtitle: Text(totalProductos),
+                    subtitle: Text(
+                        MyUtils.getSingleString(products[index]['properties'])),
                     trailing: Text('\$ ${products[index]['price']}'),
                   ),
                 ),
@@ -257,7 +251,7 @@ class KitchenExpandOrder extends StatelessWidget {
                 ? 'En preparación'
                 : data['status'] == 1
                     ? 'Finalizado'
-                    : 'Cancelado',
+                    : 'No posible',
             style: const TextStyle(
               fontWeight: FontWeight.w400,
               fontSize: 16,
@@ -294,7 +288,7 @@ class KitchenExpandOrder extends StatelessWidget {
                               .update({'status': 0});
                           Navigator.pop(context);
                         },
-                  child: const Text('Cancelado'),
+                  child: const Text('No posible'),
                 ),
               ),
             ],

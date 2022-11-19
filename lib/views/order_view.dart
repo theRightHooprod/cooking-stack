@@ -4,6 +4,7 @@ import 'package:time_elapsed/time_elapsed.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../common/global_variables.dart';
+import '../common/utils.dart';
 
 DateTime now = DateTime.now();
 DateTime todaydate = DateTime(now.year, now.month, now.day);
@@ -89,7 +90,7 @@ class CurrentOrders extends StatelessWidget {
                           children: [
                             Text('Cliente: $clientname'),
                             Text(
-                                'Estado: ${data['status'] == null ? 'En preparación ${TimeElapsed.fromDateTime(date)}' : data['status'] == 1 ? 'Finalizado' : 'Cancelado'}'),
+                                'Estado: ${data['status'] == null ? 'En preparación ${TimeElapsed.fromDateTime(date)}' : data['status'] == 1 ? 'Finalizado' : 'No posible'}'),
                           ],
                         ),
                         leading: Icon(
@@ -127,15 +128,6 @@ class ExpandOrder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<dynamic> products = data['products'] as List<dynamic>;
-    String totalProductos = '';
-
-    for (int i = 0; i < products.length; i++) {
-      if (i < products.length - 1) {
-        totalProductos += products[i]['name'] + ', ';
-      } else {
-        totalProductos += products[i]['name'];
-      }
-    }
 
     return Scaffold(
       appBar: GlobalVar.asd,
@@ -175,16 +167,25 @@ class ExpandOrder extends StatelessWidget {
           const SizedBox(
             height: 20,
           ),
-          TextButton(
-            child: Text(
-              data['whatsappnumber'],
-              textAlign: TextAlign.left,
-              style: const TextStyle(
-                fontWeight: FontWeight.w400,
-                fontSize: 16,
-              ),
+          GestureDetector(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(
+                  data['whatsappnumber'],
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 16,
+                  ),
+                ),
+                const SizedBox(width: 10),
+                const Icon(
+                  Icons.message,
+                  color: Colors.green,
+                )
+              ],
             ),
-            onPressed: () => launchWhatsApp(data['whatsappnumber']),
+            onTap: () => launchWhatsApp(data['whatsappnumber']),
           ),
           const SizedBox(
             height: 20,
@@ -224,7 +225,7 @@ class ExpandOrder extends StatelessWidget {
                 ? 'En preparación'
                 : data['status'] == 1
                     ? 'Finalizado'
-                    : 'Cancelado',
+                    : 'No posible',
             style: const TextStyle(
               fontWeight: FontWeight.w400,
               fontSize: 16,
@@ -253,7 +254,8 @@ class ExpandOrder extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: ListTile(
                     title: Text(products[index]['name']),
-                    subtitle: Text(totalProductos),
+                    subtitle: Text(
+                        MyUtils.getSingleString(products[index]['properties'])),
                     trailing: Text('\$ ${products[index]['price']}'),
                   ),
                 ),

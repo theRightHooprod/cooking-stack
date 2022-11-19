@@ -49,72 +49,97 @@ class _AdminState extends State<Admin> {
                 child: const Icon(Icons.settings)),
           ],
         ),
-        body: StreamBuilder(
-          stream: _usersStream,
-          builder:
-              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-            if (snapshot.hasError) {
-              return const Center(child: Text('Algo ha salido mal 😞'));
-            }
+        body: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: StreamBuilder(
+            stream: _usersStream,
+            builder:
+                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              if (snapshot.hasError) {
+                return const Center(child: Text('Algo ha salido mal 😞'));
+              }
 
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: Text("Cargando... 😽"));
-            }
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(
+                    child: CircularProgressIndicator(
+                  color: GlobalVar.orange,
+                ));
+              }
 
-            return ListView(
-              children: snapshot.data!.docs.map((DocumentSnapshot document) {
-                Map<String, dynamic> data =
-                    document.data()! as Map<String, dynamic>;
-                return ListTile(
-                  title: Text(data['name']),
-                  subtitle: Text('Contiene: ${data['properties'].toString()}'),
-                  leading: data['picture'] != ''
-                      ? Image.memory(base64Decode(data['picture']))
-                      : const Icon(
-                          Icons.cancel,
-                          size: 40,
-                          color: Colors.red,
-                        ),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text('\$ ${data['price']}'),
-                      IconButton(
-                        icon: const Icon(Icons.delete),
-                        onPressed: () {
-                          FirebaseFirestore.instance
-                              .collection('miscellaneous')
-                              .doc(document.id)
-                              .delete()
-                              .then((value) => {
-                                    ScaffoldMessenger.of(context)
-                                        .hideCurrentSnackBar(),
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(SnackBar(
-                                      content: Text(
-                                        'El producto se ha eliminado correctamente',
-                                        style:
-                                            TextStyle(color: GlobalVar.black),
-                                      ),
-                                      backgroundColor: Colors.green,
-                                    )),
-                                  })
-                              .catchError((error) => {
-                                    ScaffoldMessenger.of(context)
-                                        .hideCurrentSnackBar(),
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(
+              return ListView(
+                children: snapshot.data!.docs.map((DocumentSnapshot document) {
+                  Map<String, dynamic> data =
+                      document.data()! as Map<String, dynamic>;
+
+                  String totalProperties = '';
+
+                  List<dynamic> propierties =
+                      data['properties'] as List<dynamic>;
+
+                  for (int i = 0; i < propierties.length; i++) {
+                    if (i < propierties.length - 1) {
+                      totalProperties += propierties[i] + ', ';
+                    } else {
+                      totalProperties += propierties[i];
+                    }
+                  }
+
+                  return Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: ListTile(
+                        title: Text(data['name']),
+                        subtitle: Text('Contiene: $totalProperties'),
+                        leading: data['picture'] != ''
+                            ? Image.memory(base64Decode(data['picture']))
+                            : const Icon(
+                                Icons.cancel,
+                                size: 40,
+                                color: Colors.red,
+                              ),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text('\$ ${data['price']}'),
+                            IconButton(
+                              icon: const Icon(Icons.delete),
+                              onPressed: () {
+                                FirebaseFirestore.instance
+                                    .collection('miscellaneous')
+                                    .doc(document.id)
+                                    .delete()
+                                    .then((value) => {
+                                          ScaffoldMessenger.of(context)
+                                              .hideCurrentSnackBar(),
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(SnackBar(
                                             content: Text(
-                                                'Producto agregado con exito')))
-                                  });
-                        },
+                                              'El producto se ha eliminado correctamente',
+                                              style: TextStyle(
+                                                  color: GlobalVar.black),
+                                            ),
+                                            backgroundColor: Colors.green,
+                                          )),
+                                        })
+                                    .catchError((error) => {
+                                          ScaffoldMessenger.of(context)
+                                              .hideCurrentSnackBar(),
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(const SnackBar(
+                                                  content: Text(
+                                                      'Producto agregado con exito')))
+                                        });
+                              },
+                            ),
+                          ],
+                        ),
                       ),
-                    ],
-                  ),
-                );
-              }).toList(),
-            );
-          },
+                    ),
+                  );
+                }).toList(),
+              );
+            },
+          ),
         ));
   }
 }
@@ -243,7 +268,7 @@ class _AddFoodState extends State<AddFood> {
               height: 20,
             ),
             Text(
-              'Añade una descripción (${descriptionsBankStrings.length})',
+              'Descripción del producto (${descriptionsBankStrings.length})',
               style: const TextStyle(
                 fontWeight: FontWeight.w700,
                 fontSize: 16,

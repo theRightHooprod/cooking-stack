@@ -23,6 +23,20 @@ class MyUtils {
     }
     return fixed;
   }
+
+  static String getSingleString(List<dynamic> list) {
+    String singlestring = '';
+
+    for (int i = 0; i < list.length; i++) {
+      if (i < list.length - 1) {
+        singlestring += list[i] + ', ';
+      } else {
+        singlestring += list[i];
+      }
+    }
+
+    return singlestring;
+  }
 }
 
 class Order {
