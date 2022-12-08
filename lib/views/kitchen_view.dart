@@ -1,13 +1,55 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cooking_stack/common/custom_wa.dart';
 import 'package:cooking_stack/common/global_variables.dart';
 import 'package:cooking_stack/views/settings_view.dart';
 import 'package:flutter/material.dart';
 import 'package:time_elapsed/time_elapsed.dart';
 
+import '../common/local_notifications.dart';
 import '../common/utils.dart';
 
-class KitchenView extends StatelessWidget {
+DateTime now = DateTime.now();
+DateTime todaydate = DateTime(now.year, now.month, now.day);
+DateTime tomorrowdate = DateTime(now.year, now.month, now.day + 1);
+
+class KitchenView extends StatefulWidget {
   const KitchenView({super.key});
+
+  @override
+  State<KitchenView> createState() => _KitchenViewState();
+}
+
+class _KitchenViewState extends State<KitchenView> {
+  dynamic notificationListener;
+
+  @override
+  void initState() {
+    late final LocalNotificationService service;
+    service = LocalNotificationService();
+    service.intialize();
+
+    notificationListener = FirebaseFirestore.instance
+        .collection('orders')
+        .where('created', isGreaterThanOrEqualTo: todaydate)
+        .where('created', isLessThan: tomorrowdate)
+        .orderBy('created', descending: true)
+        .snapshots()
+        .listen((event) {
+      for (var element in event.docChanges) {
+        if (element.type == DocumentChangeType.added) {
+          service.showNotification(
+              id: 0, title: 'Cooking Stack', body: 'Se ha añadido una orden');
+        }
+      }
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    notificationListener.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -271,6 +313,7 @@ class KitchenExpandOrder extends StatelessWidget {
                               .collection('orders')
                               .doc(docid)
                               .update({'status': 1});
+                          CustomWa.sendReady(int.parse(data['whatsappnumber']));
                           Navigator.pop(context);
                         },
                   child: const Text('Finalizado'),
@@ -286,6 +329,8 @@ class KitchenExpandOrder extends StatelessWidget {
                               .collection('orders')
                               .doc(docid)
                               .update({'status': 0});
+                          CustomWa.sendNotPossible(
+                              int.parse(data['whatsappnumber']));
                           Navigator.pop(context);
                         },
                   child: const Text('No posible'),

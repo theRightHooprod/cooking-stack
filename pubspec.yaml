@@ -42,6 +42,11 @@ dependencies:
   image_picker: ^0.8.6
   time_elapsed: ^0.2.6
   url_launcher: ^6.1.6
+  flutter_local_notifications: ^9.7.0
+  rxdart: ^0.27.7
+  whatsapp: ^2.0.0
+  shared_preferences: ^2.0.15
+  rounded_loading_button: ^2.1.0
 
 dev_dependencies:
   flutter_test:

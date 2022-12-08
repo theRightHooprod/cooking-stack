@@ -1,9 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cooking_stack/views/settings_view.dart';
 import 'package:flutter/material.dart';
 
 import '../common/global_variables.dart';
+import '../common/local_notifications.dart';
 import 'add_order.dart';
 import 'order_view.dart';
+
+DateTime now = DateTime.now();
+DateTime todaydate = DateTime(now.year, now.month, now.day);
+DateTime tomorrowdate = DateTime(now.year, now.month, now.day + 1);
 
 class MainMenu extends StatefulWidget {
   const MainMenu({super.key});
@@ -16,10 +22,37 @@ class _MainMenuState extends State<MainMenu> {
   var controller = TextEditingController();
   var controller2 = TextEditingController();
 
+  dynamic notificationListener;
+
+  @override
+  void initState() {
+    late final LocalNotificationService service;
+    service = LocalNotificationService();
+    service.intialize();
+
+    notificationListener = FirebaseFirestore.instance
+        .collection('orders')
+        .where('created', isGreaterThanOrEqualTo: todaydate)
+        .where('created', isLessThan: tomorrowdate)
+        .orderBy('created', descending: true)
+        .snapshots()
+        .listen((event) {
+      for (var element in event.docChanges) {
+        if (element.type == DocumentChangeType.modified) {
+          service.showNotification(
+              id: 0,
+              title: 'Cooking Stack',
+              body: 'Se ha modificado el estado de una orden');
+        }
+      }
+    });
+    super.initState();
+  }
+
   @override
   void dispose() {
     super.dispose();
-
+    notificationListener.cancel();
     controller.dispose();
   }
 

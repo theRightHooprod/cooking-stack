@@ -31,7 +31,7 @@ class MyUtils {
       if (i < list.length - 1) {
         singlestring += list[i] + ', ';
       } else {
-        singlestring += list[i];
+        singlestring += list[i] + '.';
       }
     }
 

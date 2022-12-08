@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 
-import '../views/admin_view.dart';
-import '../views/main_menu.dart';
-
 class GlobalVar {
   GlobalVar._();
 
   static Color black = const Color(0xff1c1c1c);
   static Color orange = const Color(0xffdc582a);
   static Color red = const Color(0xffd3273e);
+
+  static String waAccessToken =
+      'EAAwVvInHpgYBAJ7ZCTqLfouWcjBWBPODDlq9kWSxNLUiTqeUZAyEivgSLTiMxxv3PBgSZBNViOovzhJ3X9p1wEUXFgvVS4IJfgSkGzBUnukYp3PUWFGShFLZAaIJvZAXEiSIGZAh9MXMTmQp2sOyE5WSzZA6IbAo9QjCA1P8wlMsj8beZAjhkpl3lAOumpJigTmzoljPXHto1mTTJMd63fsSWwhkJ4E5oYwZD';
+  static int fromid = 110235615246028;
 
   static String accountAkinator(String uid) {
     if (uid == '1OxEdNtRtkedc0aDHvhMgtyjfwx1') {

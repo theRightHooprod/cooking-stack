@@ -7,6 +7,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'common/custom_wa.dart';
 import 'common/theme_data.dart';
 import 'firebase_options.dart';
 
@@ -22,21 +23,47 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  FirebaseAuth.instance.authStateChanges().listen((User? user) async {
-    runApp(MaterialApp(
-        theme: CustomTheme.theme,
-        initialRoute: user == null
-            ? 'login'
-            : user.uid == '1OxEdNtRtkedc0aDHvhMgtyjfwx1'
-                ? 'admin'
-                : user.uid == 'oBtMtP8gWXZfWWJlJEzHeIvoVMx2'
-                    ? 'kitchen'
-                    : '/',
-        routes: {
-          '/': (context) => const MainMenu(),
-          'admin': (context) => const Admin(),
-          'login': (context) => const LoginView(),
-          'kitchen': (context) => const KitchenView()
-        }));
-  });
+  CustomWa.init();
+
+  runApp(StreamBuilder(
+    stream: FirebaseAuth.instance.authStateChanges(),
+    builder: (context, snapshot) {
+      switch (snapshot.connectionState) {
+        case ConnectionState.waiting:
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        default:
+          switch (snapshot.data?.uid) {
+            case null:
+              return MaterialApp(
+                  theme: CustomTheme.theme,
+                  initialRoute: 'login',
+                  routes: {
+                    '/': (context) => const MainMenu(),
+                    'admin': (context) => const Admin(),
+                    'login': (context) => const LoginView(),
+                    'kitchen': (context) => const KitchenView()
+                  });
+              ;
+            default:
+              return MaterialApp(
+                  theme: CustomTheme.theme,
+                  initialRoute: snapshot.data == null
+                      ? 'login'
+                      : snapshot.data!.uid == '1OxEdNtRtkedc0aDHvhMgtyjfwx1'
+                          ? 'admin'
+                          : snapshot.data!.uid == 'oBtMtP8gWXZfWWJlJEzHeIvoVMx2'
+                              ? 'kitchen'
+                              : '/',
+                  routes: {
+                    '/': (context) => const MainMenu(),
+                    'admin': (context) => const Admin(),
+                    'login': (context) => const LoginView(),
+                    'kitchen': (context) => const KitchenView()
+                  });
+          }
+      }
+    },
+  ));
 }

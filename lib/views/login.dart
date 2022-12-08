@@ -1,6 +1,10 @@
 import 'package:cooking_stack/common/global_variables.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
+
+final RoundedLoadingButtonController _btnController =
+    RoundedLoadingButtonController();
 
 class LoginView extends StatelessWidget {
   const LoginView({super.key});
@@ -53,29 +57,34 @@ class LoginView extends StatelessWidget {
                     hintText: 'Contraseña', counterText: ''),
               ),
               const SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 50),
-                child: ElevatedButton(
-                    onPressed: () async {
-                      await FirebaseAuth.instance
-                          .signInWithEmailAndPassword(
-                              email: usernameController.text
-                                  .trimLeft()
-                                  .trimRight(),
-                              password: passwordController.text)
-                          .then((value) {
-                        Navigator.pushReplacementNamed(
-                          context,
-                          GlobalVar.accountAkinator(value.user!.uid),
-                        );
-                      }).catchError((error) {
-                        ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(error.toString())));
-                      });
-                    },
-                    child: const Text('Iniciar Sesión')),
-              )
+              RoundedLoadingButton(
+                controller: _btnController,
+                color: GlobalVar.orange,
+                onPressed: () async {
+                  await FirebaseAuth.instance
+                      .signInWithEmailAndPassword(
+                          email: usernameController.text.trimLeft().trimRight(),
+                          password: passwordController.text)
+                      .then((value) {
+                    _btnController.success();
+                    Future.delayed(
+                        const Duration(seconds: 1, milliseconds: 500),
+                        () => Navigator.pushReplacementNamed(
+                              context,
+                              GlobalVar.accountAkinator(value.user!.uid),
+                            ));
+                  }).onError((error, stackTrace) {
+                    _btnController.error();
+
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(error.toString())));
+                  });
+                  Future.delayed(
+                      const Duration(seconds: 2), () => _btnController.reset());
+                },
+                child: const Text('Iniciar sesión'),
+              ),
             ]),
       ),
     );

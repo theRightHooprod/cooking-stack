@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cooking_stack/common/firebase.dart';
 import 'package:flutter/material.dart';
 
+import '../common/custom_wa.dart';
 import '../common/global_variables.dart';
 import '../common/utils.dart';
 
@@ -170,7 +171,8 @@ class _AddOrderState extends State<AddOrder> {
       ),
       body: WillPopScope(
         onWillPop: () async {
-          return false;
+          Navigator.of(context).pop(miscellaneousList);
+          return true;
         },
         child: Padding(
           padding: const EdgeInsets.all(20.0),
@@ -355,6 +357,12 @@ class _CheckOutState extends State<CheckOut> {
                         ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text(error.toString())));
                       }).then((value) => {
+                                CustomWa.sendAdded(
+                                    int.parse(clientWhatsAppController.text
+                                        .trimLeft()
+                                        .trimRight()
+                                        .replaceAll(' ', '')),
+                                    widget.data),
                                 ScaffoldMessenger.of(context)
                                     .hideCurrentSnackBar(),
                                 ScaffoldMessenger.of(context)
