@@ -316,7 +316,11 @@ class _AddFoodState extends State<AddFood> {
                 IconButton(
                     onPressed: () {
                       setState(() {
-                        descriptionsBankStrings.add(currentDescription.text);
+                        if (!descriptionsBankStrings
+                            .contains(currentDescription.text)) {
+                          descriptionsBankStrings.add(currentDescription.text);
+                        }
+                        currentDescription.clear();
                       });
                     },
                     icon: Icon(Icons.add, color: GlobalVar.orange)),
