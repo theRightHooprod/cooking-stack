@@ -32,7 +32,7 @@ class MyFirebase {
     }
   }
 
-  static Future<void> addOrder({required Order order}) async {
+  static Future<void> addOrder({required CustomOrder order}) async {
     try {
       orders.add(order.toJson());
     } catch (error) {

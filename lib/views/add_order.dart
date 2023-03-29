@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cooking_stack/common/firebase.dart';
 import 'package:flutter/material.dart';
@@ -74,6 +76,122 @@ class _ShoopingCarState extends State<ShoopingCar> {
                                   ),
                                 ],
                               ),
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => Scaffold(
+                                              appBar: GlobalVar.asd,
+                                              body: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(20),
+                                                child: ListView(
+                                                  children: [
+                                                    const SizedBox(
+                                                      height: 20,
+                                                    ),
+                                                    const Text(
+                                                      'Nombre',
+                                                      style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w700,
+                                                        fontSize: 16,
+                                                      ),
+                                                    ),
+                                                    const SizedBox(
+                                                      height: 20,
+                                                    ),
+                                                    Card(
+                                                      child: ListTile(
+                                                        title: Text(data[index]
+                                                            ['name']),
+                                                      ),
+                                                    ),
+                                                    const SizedBox(
+                                                      height: 20,
+                                                    ),
+                                                    const Text(
+                                                      'Precio',
+                                                      style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w700,
+                                                        fontSize: 16,
+                                                      ),
+                                                    ),
+                                                    const SizedBox(
+                                                      height: 20,
+                                                    ),
+                                                    Card(
+                                                      child: ListTile(
+                                                        title: Text(
+                                                            '${data[index]['price']}'),
+                                                      ),
+                                                    ),
+                                                    const SizedBox(
+                                                      height: 20,
+                                                    ),
+                                                    const Text(
+                                                      'Imagen',
+                                                      style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w700,
+                                                        fontSize: 16,
+                                                      ),
+                                                    ),
+                                                    const SizedBox(
+                                                      height: 20,
+                                                    ),
+                                                    data[index]['picture'] != ''
+                                                        ? Image.memory(
+                                                            base64Decode(data[
+                                                                    index]
+                                                                ['picture']))
+                                                        : const Icon(
+                                                            Icons.cancel,
+                                                            size: 40,
+                                                            color: Colors.red,
+                                                          ),
+                                                    const SizedBox(
+                                                      height: 20,
+                                                    ),
+                                                    const Text(
+                                                      'Contiene',
+                                                      style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w700,
+                                                        fontSize: 16,
+                                                      ),
+                                                    ),
+                                                    const SizedBox(
+                                                      height: 20,
+                                                    ),
+                                                    Expanded(
+                                                      child: ListView.builder(
+                                                        physics:
+                                                            const NeverScrollableScrollPhysics(),
+                                                        shrinkWrap: true,
+                                                        itemCount: data[index]
+                                                                ['properties']
+                                                            .length,
+                                                        itemBuilder:
+                                                            (context, index2) {
+                                                          return Card(
+                                                            child: ListTile(
+                                                              title: Text(data[
+                                                                          index]
+                                                                      [
+                                                                      'properties']
+                                                                  [index2]),
+                                                            ),
+                                                          );
+                                                        },
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            )));
+                              },
                             ),
                           );
                         },
@@ -342,7 +460,7 @@ class _CheckOutState extends State<CheckOut> {
                         totalprice += widget.data[i]['price'];
                       }
                       MyFirebase.addOrder(
-                              order: Order(
+                              order: CustomOrder(
                                   clientname: clientNameController.text
                                       .trimLeft()
                                       .trimRight(),

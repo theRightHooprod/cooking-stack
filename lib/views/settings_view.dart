@@ -137,10 +137,13 @@ class SettingsView extends StatelessWidget {
                     '1OxEdNtRtkedc0aDHvhMgtyjfwx1'
                 ? Center(
                     child: ElevatedButton(
-                        onPressed: () async {
-                          var prefs = await SharedPreferences.getInstance();
-                          await prefs.remove('wkey');
-                          await prefs.remove('numberid');
+                        onPressed: () {
+                          SharedPreferences.getInstance().then((value) {
+                            value.remove('wkey');
+                            value.remove('numberid');
+                          });
+
+                          Navigator.pop(context);
                         },
                         child: const Text('Borrar llaves')),
                   )

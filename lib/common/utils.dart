@@ -39,14 +39,14 @@ class MyUtils {
   }
 }
 
-class Order {
+class CustomOrder {
   double totalPrice;
   DateTime created = DateTime.now();
   List<Map<String, dynamic>> products;
   String clientname;
   String whatsappNumber;
 
-  Order(
+  CustomOrder(
       {required this.totalPrice,
       required this.products,
       required this.clientname,
