@@ -1,4 +1,18 @@
-# Firebase CLI installation for dart and flutter connection with firestore.
+# Setup Cooking Stack for local development
+In this guide I'll show you how to setup Cooking Stack for local development.
+
+## Download the repository
+To download the repository you can use the following command:
+
+```
+git clone https://github.com/theRightHooprod/cooking-stack.git
+```
+
+## Flutter installation
+To install flutter you can follow the official guide [here](https://flutter.dev/docs/get-started/install)
+
+
+## Firebase CLI installation for dart and flutter connection with firestore.
 
 To achieve the connection of an application created with the dart language and the flutter framework, it is necessary to install the firebase client which will help facilitate the process of registering cross-platform code and make use of both the non-relational database cloud firestore.
 
@@ -27,3 +41,24 @@ flutterfire configure --project=cooking_stack
 ```
 
 This automatically registers the application with the firebase service and adds `lib/firebase_options.dart` where the necessary keys for the connection to the firebase service are registered.
+
+## Firebase project creation
+
+To create a firebase project you can follow the official guide [here](https://firebase.google.com/docs/web/setup)
+
+Then, you need to create a Firestore databas. You can follow the official guide [here](https://firebase.google.com/docs/firestore/quickstart)
+
+Afterr that, you will need to start Firebase Autehtication. You can follow the official guide [here](https://firebase.google.com/docs/auth/web/start)
+
+## Set App Accounts
+You will need to create 3 accounts for the app to work properly. You can do it in the Authentication tab in the Firebase console. After that you will need to set the account UUID in the app on [lib/common/global_variables.dart](lib/common/global_variables.dart)
+
+## Compile the app
+To compile the app you will need to run the following command:
+
+```
+flutter run
+```
+
+## WhatsApp API keys
+To set the WhatsApp API key you will need to compile the app for any platform and then you will be able to set the keys in the app as an administrator.
