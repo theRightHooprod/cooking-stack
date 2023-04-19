@@ -12,17 +12,21 @@ class MyFirebase {
       {required String name,
       double price = 0,
       required String picture,
-      required List<String> description}) async {
+      required List<String> description,
+      bool isInventoried = false,
+      int cantidad = 0}) async {
     try {
       if (name.isEmpty) {
         throw Exception('El nombre no puede estar vacío');
         //   } else if (picture.isEmpty) {
         //     throw Exception('La imagen no puede estar vacía');
       } else {
+        cantidad != 0 ? description = [] : description = description;
         miscellaneous.add({
           'name': await MyUtils.cutAndLowerString(name),
           'picture': picture,
           'created': DateTime.now(),
+          'cantidad': cantidad,
           'properties': await MyUtils.cutAndLowerList(description),
           'price': price
         });

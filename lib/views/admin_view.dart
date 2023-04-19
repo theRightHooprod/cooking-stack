@@ -6,6 +6,7 @@ import 'package:cooking_stack/common/firebase.dart';
 import 'package:cooking_stack/views/settings_view.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_switch/flutter_switch.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../common/global_variables.dart';
@@ -71,10 +72,11 @@ class _AdminState extends State<Admin> {
 
               return ListView(
                 children: snapshot.data!.docs.map((DocumentSnapshot document) {
+                  String totalProperties = '';
                   Map<String, dynamic> data =
                       document.data()! as Map<String, dynamic>;
-
-                  String totalProperties = '';
+                  int cantidad =
+                      data['cantidad'] != null ? data['cantidad'] as int : 0;
 
                   List<dynamic> propierties =
                       data['properties'] as List<dynamic>;
@@ -92,7 +94,9 @@ class _AdminState extends State<Admin> {
                       padding: const EdgeInsets.all(10),
                       child: ListTile(
                         title: Text(data['name']),
-                        subtitle: Text('Contiene: $totalProperties'),
+                        subtitle: cantidad == 0
+                            ? Text('Contiene: $totalProperties')
+                            : Text('En inventario: $cantidad'),
                         leading: data['picture'] != ''
                             ? Image.memory(base64Decode(data['picture']))
                             : const Icon(
@@ -160,6 +164,8 @@ class _AddFoodState extends State<AddFood> {
   List<Widget> descriptionsBank = [];
   List<String> descriptionsBankStrings = [];
   int savedIndex = 0;
+  bool invetoryToggle = false;
+  int onInvetory = 0;
 
   var productName = TextEditingController();
   var productPrice = TextEditingController();
@@ -270,76 +276,194 @@ class _AddFoodState extends State<AddFood> {
             const SizedBox(
               height: 20,
             ),
-            Text(
-              'Descripción del producto (${descriptionsBankStrings.length})',
-              style: const TextStyle(
-                fontWeight: FontWeight.w700,
-                fontSize: 16,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                const Text(
+                  '¿Inventariado?',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 16,
+                  ),
+                ),
+                const SizedBox(
+                  width: 20,
+                ),
+                FlutterSwitch(
+                  width: 80,
+                  height: 25,
+                  toggleSize: 25,
+                  value: invetoryToggle,
+                  borderRadius: 30,
+                  padding: 8.0,
+                  activeColor: GlobalVar.orange,
+                  onToggle: (val) {
+                    setState(() {
+                      invetoryToggle = val;
+                    });
+                  },
+                ),
+              ],
             ),
             const SizedBox(
               height: 20,
             ),
-            Column(
-                children: descriptionsBank = descriptionsBankStrings
-                    .map(
-                      (description) => ListTile(
-                        leading: const Icon(
-                          Icons.arrow_forward_outlined,
+            invetoryToggle
+                ? const Text(
+                    'Cantidad en inventario',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 16,
+                    ),
+                  )
+                : const SizedBox(),
+            invetoryToggle
+                ? const SizedBox(
+                    height: 20,
+                  )
+                : const SizedBox(),
+            invetoryToggle
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      GestureDetector(
+                        child: Container(
+                          width: 35,
+                          height: 35,
+                          decoration: BoxDecoration(
+                            color: GlobalVar.orange,
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Center(
+                            child: Text(
+                              '-',
+                              style: TextStyle(
+                                fontSize: 30,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
                         ),
-                        title: Text(description),
-                        trailing: IconButton(
-                            onPressed: () {
-                              setState(() {
-                                descriptionsBankStrings.removeWhere(
-                                    (element) => element == description);
-                              });
-                            },
-                            icon: const Icon(
-                              Icons.delete,
-                            )),
+                        onTap: () {
+                          setState(() {
+                            if (onInvetory > 0) {
+                              onInvetory--;
+                            }
+                          });
+                        },
                       ),
-                    )
-                    .toList()),
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: currentDescription,
-                    decoration: InputDecoration(
-                        hintText: 'Escribe una descripción',
-                        icon:
-                            Icon(Icons.list_outlined, color: GlobalVar.orange)),
-                  ),
-                ),
-                const SizedBox(width: 20),
-                IconButton(
-                    onPressed: () {
-                      setState(() {
-                        if (!descriptionsBankStrings
-                            .contains(currentDescription.text)) {
-                          descriptionsBankStrings.add(currentDescription.text);
-                        }
-                        currentDescription.clear();
-                      });
-                    },
-                    icon: Icon(Icons.add, color: GlobalVar.orange)),
-              ],
-            ),
+                      const SizedBox(width: 20),
+                      Text(
+                        onInvetory.toString(),
+                        style: const TextStyle(fontSize: 20),
+                      ),
+                      const SizedBox(width: 20),
+                      GestureDetector(
+                        child: Container(
+                          width: 35,
+                          height: 35,
+                          decoration: BoxDecoration(
+                            color: GlobalVar.orange,
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Center(
+                            child: Text(
+                              '+',
+                              style: TextStyle(
+                                fontSize: 30,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                        onTap: () {
+                          setState(() {
+                            onInvetory++;
+                          });
+                        },
+                      ),
+                    ],
+                  )
+                : const SizedBox(),
+            !invetoryToggle
+                ? Text(
+                    'Descripción del producto (${descriptionsBankStrings.length})',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 16,
+                    ),
+                  )
+                : const SizedBox(),
+            !invetoryToggle
+                ? const SizedBox(
+                    height: 20,
+                  )
+                : const SizedBox(),
+            !invetoryToggle
+                ? Column(
+                    children: descriptionsBank = descriptionsBankStrings
+                        .map(
+                          (description) => ListTile(
+                            leading: const Icon(
+                              Icons.arrow_forward_outlined,
+                            ),
+                            title: Text(description),
+                            trailing: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    descriptionsBankStrings.removeWhere(
+                                        (element) => element == description);
+                                  });
+                                },
+                                icon: const Icon(
+                                  Icons.delete,
+                                )),
+                          ),
+                        )
+                        .toList())
+                : const SizedBox(),
+            !invetoryToggle
+                ? Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: currentDescription,
+                          decoration: InputDecoration(
+                              hintText: 'Escribe una descripción',
+                              icon: Icon(Icons.list_outlined,
+                                  color: GlobalVar.orange)),
+                        ),
+                      ),
+                      const SizedBox(width: 20),
+                      IconButton(
+                          onPressed: () {
+                            setState(() {
+                              if (!descriptionsBankStrings
+                                  .contains(currentDescription.text)) {
+                                descriptionsBankStrings
+                                    .add(currentDescription.text);
+                              }
+                              currentDescription.clear();
+                            });
+                          },
+                          icon: Icon(Icons.add, color: GlobalVar.orange)),
+                    ],
+                  )
+                : const SizedBox(),
             const SizedBox(height: 20),
             ElevatedButton(
                 onPressed: () {
                   if (productName.text.isNotEmpty &&
                       productPrice.text.isNotEmpty) {
-                    Uint8List bytes =
-                        File(capturedImage!.path).readAsBytesSync();
+                    // Uint8List bytes =
+                    //     File(capturedImage!.path).readAsBytesSync();
 
                     MyFirebase.addMiscellaneous(
+                        isInventoried: invetoryToggle,
+                        cantidad: onInvetory,
                         name: productName.text,
                         price: double.parse(productPrice.text),
-                        picture: base64Encode(bytes).length < 1048487
-                            ? base64Encode(bytes)
-                            : ' ',
+                        picture: '',
                         description: descriptionsBankStrings);
                     Navigator.pop(context);
                     ScaffoldMessenger.of(context).hideCurrentSnackBar();
