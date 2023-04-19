@@ -1,3 +1,20 @@
+//     CookingStack - A semi-automated WhatsApp notificator for cooking orders
+//     Copyright (C) 2023 theRightHoopRod
+
+//     This program is free software: you can redistribute it and/or modify
+//     it under the terms of the GNU Affero General Public License as published
+//     by the Free Software Foundation, either version 3 of the License.
+
+//     This program is distributed in the hope that it will be useful,
+//     but WITHOUT ANY WARRANTY; without even the implied warranty of
+//     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//     GNU Affero General Public License for more details.
+
+//     You should have received a copy of the GNU Affero General Public License
+//     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+//     Contact me at: https://github.com/theRightHooprod or hoop3.1416@gmail.com
+
 import 'package:flutter/material.dart';
 
 class GlobalVar {
@@ -23,7 +40,7 @@ class GlobalVar {
 
   static AppBar asd = AppBar(
     centerTitle: true,
-    title: Row(mainAxisAlignment: MainAxisAlignment.center, children: const [
+    title: const Row(mainAxisAlignment: MainAxisAlignment.center, children: [
       Text(
         'Cooking Stack',
         style: TextStyle(color: Colors.white, fontSize: 25),
