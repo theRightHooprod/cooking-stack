@@ -30,7 +30,7 @@ class CustomWa {
 
     whatsapp.setup(
         accessToken: prefs.getString('wkey'),
-        fromNumberId: int.parse(prefs.getString('numberid')!));
+        fromNumberId: int.parse(prefs.getString('numberid') ?? '0'));
   }
 
   static void sendAdded(int to, List<Map<String, dynamic>> orders) {
