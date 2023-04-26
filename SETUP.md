@@ -80,3 +80,17 @@ flutter run
 ## WhatsApp API keys
 ---
 To set the WhatsApp API key you will need to compile the app for any platform and then you will be able to set the keys in the app as an administrator.
+
+## Poduction build
+---
+To build the app for production you will need to modify isProd on GlobalVar class on [lib/common/global_variables.dart](lib/common/global_variables.dart) and then run the following command:
+
+```
+flutter build apk
+```
+
+If you want to connect to local emulators change back isProd to false and run the following command:
+
+```
+firebase emulators:start
+```

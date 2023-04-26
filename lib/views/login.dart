@@ -23,13 +23,34 @@ import 'package:rounded_loading_button/rounded_loading_button.dart';
 final RoundedLoadingButtonController _btnController =
     RoundedLoadingButtonController();
 
-class LoginView extends StatelessWidget {
+const List<String> list = [
+  'empleado@caffetec.com',
+  'gerencia@caffetec.com',
+  'cocina@caffetec.com'
+];
+
+class LoginView extends StatefulWidget {
   const LoginView({super.key});
 
   @override
+  State<LoginView> createState() => _LoginViewState();
+}
+
+class _LoginViewState extends State<LoginView> {
+  var usernameController = TextEditingController();
+  var passwordController = TextEditingController();
+
+  String dropdownValue = list.first;
+
+  @override
+  void dispose() {
+    usernameController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    var usernameController = TextEditingController();
-    var passwordController = TextEditingController();
     return Container(
       decoration: const BoxDecoration(
           color: Colors.white,
@@ -60,12 +81,42 @@ class LoginView extends StatelessWidget {
                       color: GlobalVar.black,
                       fontWeight: FontWeight.bold)),
               const SizedBox(height: 20),
-              TextField(
-                controller: usernameController,
-                maxLength: 320,
-                decoration: const InputDecoration(
-                    hintText: 'Correo Electrónico', counterText: ''),
-              ),
+              GlobalVar.isProd
+                  ? TextField(
+                      controller: usernameController,
+                      maxLength: 320,
+                      enabled: GlobalVar.isProd,
+                      decoration: const InputDecoration(
+                          hintText: 'Correo Electrónico', counterText: ''),
+                    )
+                  : Container(
+                      height: MediaQuery.of(context).size.height * 0.08,
+                      width: MediaQuery.of(context).size.width,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                      child: DropdownButton(
+                        padding: const EdgeInsets.all(10),
+                        borderRadius: BorderRadius.circular(50),
+                        isExpanded: true,
+                        underline: const SizedBox(),
+                        style: Theme.of(context).textTheme.titleMedium,
+                        value: dropdownValue,
+                        items: list.map((String value) {
+                          return DropdownMenuItem(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        onChanged: (String? value) {
+                          setState(() {
+                            dropdownValue = value!;
+                          });
+                        },
+                        focusColor: Colors.transparent,
+                      ),
+                    ),
               TextField(
                 controller: passwordController,
                 obscureText: true,
@@ -80,7 +131,9 @@ class LoginView extends StatelessWidget {
                 onPressed: () async {
                   await FirebaseAuth.instance
                       .signInWithEmailAndPassword(
-                          email: usernameController.text.trimLeft().trimRight(),
+                          email: GlobalVar.isProd
+                              ? usernameController.text.trimLeft().trimRight()
+                              : dropdownValue,
                           password: passwordController.text)
                       .then((value) {
                     _btnController.success();
